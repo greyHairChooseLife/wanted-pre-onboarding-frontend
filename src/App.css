@@ -66,6 +66,7 @@ form > label:not(:nth-child(1)) {
 
 .formFooter {
     margin-top: 5vh;
+	margin-bottom: 5vh;
 }
 
 .formFooter > button {

@@ -1,7 +1,13 @@
 import { isEmailValide, isPswValide } from '../utils/validator';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+const API = 'https://pre-onboarding-selection-task.shop/';
 
 const Signup = () => {
+    const navigate = useNavigate();
+    const [retryMsg, setRetryMsg] = useState('');
     const [email, setEmail] = useState('');
     const [emailFeedback, setEmailFeedback] = useState(
         '이메일 입력란에 "@"를 포함 해 주세요.'
@@ -29,10 +35,34 @@ const Signup = () => {
         } else setPswFeedback('');
     }, [email, psw]);
 
+    const onSubmitApply = async (e) => {
+        e.preventDefault();
+        try {
+            const result = await axios.post(
+                API + 'auth/signup',
+                JSON.stringify({
+                    email: email,
+                    password: psw,
+                }),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            if (result.status === 201) {
+                navigate('/signin');
+            }
+        } catch (err) {
+            setRetryMsg(err.response.data.message);
+        }
+    };
+
     return (
         <>
             <h1>회원가입</h1>
-            <form method="POST">
+            <form onSubmit={onSubmitApply} method="POST">
                 <label>이메일</label>
                 <input
                     type="text"
@@ -63,6 +93,7 @@ const Signup = () => {
                     )}
                 </div>
             </form>
+            <div>{retryMsg && retryMsg + ' 다시 시도 해 주세요.'}</div>
         </>
     );
 };
