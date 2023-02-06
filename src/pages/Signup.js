@@ -6,7 +6,6 @@ import axios from 'axios';
 const API = 'https://pre-onboarding-selection-task.shop/';
 
 const Signup = () => {
-    const navigate = useNavigate();
     const [retryMsg, setRetryMsg] = useState('');
     const [email, setEmail] = useState('');
     const [emailFeedback, setEmailFeedback] = useState(
@@ -35,6 +34,7 @@ const Signup = () => {
         } else setPswFeedback('');
     }, [email, psw]);
 
+    const navigate = useNavigate();
     const onSubmitApply = async (e) => {
         e.preventDefault();
         try {

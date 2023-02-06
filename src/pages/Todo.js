@@ -1,4 +1,7 @@
 const Todo = () => {
+    const data = localStorage.getItem('access_token');
+
+    console.log('localStorage with access_token: ', data);
     return (
         <>
             <h1>to do</h1>
