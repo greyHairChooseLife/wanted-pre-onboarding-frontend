@@ -86,7 +86,7 @@ const Signin = () => {
                 <span className="inputFeedback">{emailFeedback}</span>
                 <label>비밀번호</label>
                 <input
-                    type="text"
+                    type="password"
                     name="psw"
                     placeholder="비밀번호"
                     value={psw}
