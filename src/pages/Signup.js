@@ -38,28 +38,27 @@ const Signup = () => {
         } else setPswFeedback('');
     }, [email, psw]);
 
-    const onSubmitApply = async (e) => {
+    const onSubmitApply = (e) => {
         e.preventDefault();
-        try {
-            const result = await axios.post(
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        axios
+            .post(
                 API + 'auth/signup',
                 JSON.stringify({
                     email: email,
                     password: psw,
                 }),
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-
-            if (result.status === 201) {
-                navigate('/signin');
-            }
-        } catch (err) {
-            setRetryMsg(err.response.data.message);
-        }
+                config
+            )
+            .then((res) => {
+                if (res.status === 201) navigate('/signin');
+            })
+            .catch((err) => setRetryMsg(err.response.data.message));
     };
 
     return (

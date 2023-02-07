@@ -11,18 +11,19 @@ const Todo = () => {
 
     useEffect(() => {
         if (!isLogin()) navigate('/signin');
+        else {
+            const myToken = localStorage.getItem('access_token');
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${myToken}`,
+                },
+            };
 
-        const myToken = localStorage.getItem('access_token');
-        const config = {
-            headers: {
-                Authorization: `Bearer ${myToken}`,
-            },
-        };
-
-        axios
-            .get(API + 'todos', config)
-            .then((res) => setTodos(res.data))
-            .catch((err) => console.log(err));
+            axios
+                .get(API + 'todos', config)
+                .then((res) => setTodos(res.data))
+                .catch((err) => console.log(err));
+        }
     }, []);
     console.log('responsed todos: ', todos);
 

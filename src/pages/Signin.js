@@ -39,35 +39,37 @@ const Signin = () => {
         } else setPswFeedback('');
     }, [email, psw]);
 
-    const onSubmitLogin = async (e) => {
+    const onSubmitLogin = (e) => {
         e.preventDefault();
-        try {
-            const result = await axios.post(
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+        axios
+            .post(
                 API + 'auth/signin',
                 JSON.stringify({
                     email: email,
                     password: psw,
                 }),
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                config
+            )
+            .then((res) => {
+                if (res.status === 200) {
+                    const key = Object.keys(res.data)[0];
+                    const value = res.data[key];
+                    localStorage.setItem(
+                        key,
+                        typeof value === 'string'
+                            ? value
+                            : JSON.stringify(value) //	just in case
+                    );
+
+                    navigate('/todo');
                 }
-            );
-
-            if (result.status === 200) {
-                const key = Object.keys(result.data)[0];
-                const value = result.data[key];
-                localStorage.setItem(
-                    key,
-                    typeof value === 'string' ? value : JSON.stringify(value) //	just in case
-                );
-
-                navigate('/todo');
-            }
-        } catch (err) {
-            setRetryMsg(err.response.data.message);
-        }
+            })
+            .catch((err) => setRetryMsg(err.response.data.message));
     };
 
     return (
