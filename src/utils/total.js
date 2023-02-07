@@ -8,4 +8,11 @@ const isPswValide = (psw) => {
     else return false;
 };
 
-module.exports = { isEmailValide, isPswValide };
+const isLogin = () => {
+    const data = localStorage.getItem('access_token');
+
+    if (data === null) return false;
+    else return true;
+};
+
+module.exports = { isEmailValide, isPswValide, isLogin };

@@ -1,7 +1,13 @@
-const Todo = () => {
-    const data = localStorage.getItem('access_token');
+import { isLogin } from '../utils/total';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-    console.log('localStorage with access_token: ', data);
+const Todo = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (!isLogin()) navigate('/signin');
+    }, []);
+
     return (
         <>
             <h1>to do</h1>

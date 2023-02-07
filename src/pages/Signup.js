@@ -1,4 +1,4 @@
-import { isEmailValide, isPswValide } from '../utils/validator';
+import { isEmailValide, isPswValide, isLogin } from '../utils/total';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -6,6 +6,10 @@ import axios from 'axios';
 const API = 'https://pre-onboarding-selection-task.shop/';
 
 const Signup = () => {
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (isLogin()) navigate('/todo');
+    }, []);
     const [retryMsg, setRetryMsg] = useState('');
     const [email, setEmail] = useState('');
     const [emailFeedback, setEmailFeedback] = useState(
@@ -34,7 +38,6 @@ const Signup = () => {
         } else setPswFeedback('');
     }, [email, psw]);
 
-    const navigate = useNavigate();
     const onSubmitApply = async (e) => {
         e.preventDefault();
         try {
