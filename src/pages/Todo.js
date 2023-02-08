@@ -7,7 +7,7 @@ const API = 'https://pre-onboarding-selection-task.shop/';
 
 const Todo = () => {
     const navigate = useNavigate();
-    const [todos, setTodos] = useState();
+    const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState('');
 
     const myToken = localStorage.getItem('access_token');
@@ -27,7 +27,6 @@ const Todo = () => {
                 .catch((err) => console.log(err));
         }
     }, []);
-    console.log('responsed todos: ', todos);
 
     const onClickNewTodo = () => {
         const config = {
@@ -49,21 +48,37 @@ const Todo = () => {
 
     const onChangeNewTodoInput = (e) => setNewTodo(e.target.value);
 
+    const onChangeTodoCheckbox = (_, idx) => {
+        const target = todos[idx];
+        const effectedTarget = {
+            ...target,
+            isCompleted: !target.isCompleted,
+        };
+        const effectedTodos = todos.map((originE, originIndex) => {
+            if (originIndex === idx) return effectedTarget;
+            else return originE;
+        });
+        setTodos(effectedTodos);
+    };
+
     return (
         <>
             <h1>to do</h1>
-            <li>
-                <label>
-                    <input type="checkbox" />
-                    <span>TODO 1</span>
-                </label>
-            </li>
-            <li>
-                <label>
-                    <input type="checkbox" />
-                    <span>TODO 2</span>
-                </label>
-            </li>
+            {todos.map((e, idx) => {
+                return (
+                    <li key={idx}>
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={e.isCompleted}
+                                onChange={(e) => onChangeTodoCheckbox(e, idx)}
+                            />
+                            <span>{e.todo}</span>
+                        </label>
+                    </li>
+                );
+            })}
+
             <div>
                 <input
                     data-testid="new-todo-input"
