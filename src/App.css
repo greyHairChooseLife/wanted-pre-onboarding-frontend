@@ -74,3 +74,30 @@ form > label:not(:nth-child(1)) {
     height: 5vh;
     font-size: 1.5vh;
 }
+
+
+
+
+li {
+	border: solid 1px grey;
+	background-color: papayawhip;
+	margin: 1.5vh;
+	height: 5vh;
+	display: grid;
+	grid-template-columns: 1fr 5vw 5vw;
+	align-items: center;
+}
+
+li > label > input {
+	width: 3vw;
+	height: 2vh;
+}
+
+li > label > span {
+	margin-right: 3vw;
+}
+
+li > button {
+	width: 80%;
+	height: 80%;
+}
