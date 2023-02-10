@@ -46,6 +46,19 @@ const Todo = () => {
             .then((res) => console.log(res));
     };
 
+    const onClickDeleteTodo = (e, idx) => {
+        const id = todos[idx].id;
+        const config = {
+            headers: {
+                Authorization: `Bearer ${myToken}`,
+            },
+        };
+        axios
+            .delete(API + `todos/${id}`, config)
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err));
+    };
+
     const onChangeNewTodoInput = (e) => setNewTodo(e.target.value);
 
     const onChangeTodoCheckbox = (_, idx) => {
@@ -76,7 +89,12 @@ const Todo = () => {
                             <span>{e.todo}</span>
                         </label>
                         <button data-testid="modify-button">수정</button>
-                        <button data-testid="delete-button">삭제</button>
+                        <button
+                            data-testid="delete-button"
+                            onClick={(e) => onClickDeleteTodo(e, idx)}
+                        >
+                            삭제
+                        </button>
                     </li>
                 );
             })}
