@@ -42,7 +42,10 @@ const Todo = () => {
                 },
                 config
             )
-            .then(() => requestTodo());
+            .then(() => requestTodo())
+            .catch((err) => console.log(err));
+
+        setNewTodo('');
     };
 
     const onClickDeleteTodo = (e, idx) => {
