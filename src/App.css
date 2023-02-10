@@ -97,4 +97,20 @@ li > label > span {
 li > button {
     width: 80%;
     height: 80%;
+	font-size: 1.7vh;
+}
+
+.newTodoDiv {
+	margin: 1.5vh;
+	margin-bottom: 5vh;
+}
+
+.newTodoDiv > input {
+	width: 20vw;
+}
+.newTodoDiv > button {
+	margin-left: 1vw;
+	width: 5vw;
+	height: 5vh;
+	font-size: 2vh;
 }

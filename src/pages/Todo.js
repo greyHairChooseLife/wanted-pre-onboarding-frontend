@@ -79,6 +79,20 @@ const Todo = () => {
     return (
         <>
             <h1>to do</h1>
+            <div className="newTodoDiv">
+                <input
+                    data-testid="new-todo-input"
+                    value={newTodo}
+                    onChange={onChangeNewTodoInput}
+                />
+                <button
+                    data-testid="new-todo-add-button"
+                    onClick={onClickNewTodo}
+                >
+                    추가
+                </button>
+            </div>
+
             {todos.map((e, idx) => {
                 return (
                     <li key={idx}>
@@ -100,20 +114,6 @@ const Todo = () => {
                     </li>
                 );
             })}
-
-            <div>
-                <input
-                    data-testid="new-todo-input"
-                    value={newTodo}
-                    onChange={onChangeNewTodoInput}
-                />
-                <button
-                    data-testid="new-todo-add-button"
-                    onClick={onClickNewTodo}
-                >
-                    추가
-                </button>
-            </div>
         </>
     );
 };
