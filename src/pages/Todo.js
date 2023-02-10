@@ -14,19 +14,18 @@ const Todo = () => {
 
     useEffect(() => {
         if (!isLogin()) navigate('/signin');
-        else {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${myToken}`,
-                },
-            };
-
-            axios
-                .get(API + 'todos', config)
-                .then((res) => setTodos(res.data))
-                .catch((err) => console.log(err));
-        }
+        else requestTodo();
     }, []);
+
+    const requestTodo = async () => {
+        const config = {
+            headers: {
+                Authorization: `Bearer ${myToken}`,
+            },
+        };
+        const result = await axios.get(API + 'todos', config);
+        setTodos(result.data);
+    };
 
     const onClickNewTodo = () => {
         const config = {
@@ -43,7 +42,7 @@ const Todo = () => {
                 },
                 config
             )
-            .then((res) => console.log(res));
+            .then(() => requestTodo());
     };
 
     const onClickDeleteTodo = (e, idx) => {
@@ -55,7 +54,7 @@ const Todo = () => {
         };
         axios
             .delete(API + `todos/${id}`, config)
-            .then((res) => console.log(res))
+            .then(() => requestTodo())
             .catch((err) => console.log(err));
     };
 
