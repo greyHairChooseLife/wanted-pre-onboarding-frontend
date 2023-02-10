@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API = 'https://pre-onboarding-selection-task.shop/';
+const myToken = localStorage.getItem('access_token');
 
 const Todo = () => {
     const navigate = useNavigate();
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState('');
-
-    const myToken = localStorage.getItem('access_token');
 
     useEffect(() => {
         if (!isLogin()) navigate('/signin');
@@ -48,7 +47,7 @@ const Todo = () => {
         setNewTodo('');
     };
 
-    const onClickDeleteTodo = (e, idx) => {
+    const onClickDeleteTodo = (idx) => {
         const id = todos[idx].id;
         const config = {
             headers: {
@@ -61,13 +60,75 @@ const Todo = () => {
             .catch((err) => console.log(err));
     };
 
+    const onClickUpdateTodo = (idx) => {
+        const target = todos[idx];
+        const effectedTarget = {
+            ...target,
+            isUpdating: true,
+            updateValue: target.todo,
+        };
+        const effectedTodos = todos.map((originE, originIndex) => {
+            if (originIndex === idx) return effectedTarget;
+            else return originE;
+        });
+        setTodos(effectedTodos);
+    };
+
+    const onChangeUpdateInput = (event, idx) => {
+        const target = todos[idx];
+        const effectedTarget = {
+            ...target,
+            updateValue: event.target.value,
+        };
+        const effectedTodos = todos.map((originE, originIndex) => {
+            if (originIndex === idx) return effectedTarget;
+            else return originE;
+        });
+        setTodos(effectedTodos);
+    };
+
     const onChangeNewTodoInput = (e) => setNewTodo(e.target.value);
 
-    const onChangeTodoCheckbox = (_, idx) => {
+    const onChangeTodoCheckbox = (idx) => {
         const target = todos[idx];
         const effectedTarget = {
             ...target,
             isCompleted: !target.isCompleted,
+        };
+        const effectedTodos = todos.map((originE, originIndex) => {
+            if (originIndex === idx) return effectedTarget;
+            else return originE;
+        });
+        setTodos(effectedTodos);
+    };
+
+    const onClickUpdateSubmit = (idx) => {
+        const target = todos[idx];
+        const config = {
+            headers: {
+                Authorization: `Bearer ${myToken}`,
+                'Content-Type': 'application/json',
+            },
+        };
+        axios
+            .put(
+                API + `todos/${target.id}`,
+                {
+                    todo: target.updateValue,
+                    isCompleted: target.isCompleted,
+                },
+                config
+            )
+            .then(() => requestTodo())
+            .catch((err) => console.log(err));
+    };
+
+    const onClickUpdateCancel = (idx) => {
+        const target = todos[idx];
+        const effectedTarget = {
+            ...target,
+            isUpdating: false,
+            updateValue: target.todo,
         };
         const effectedTodos = todos.map((originE, originIndex) => {
             if (originIndex === idx) return effectedTarget;
@@ -100,17 +161,50 @@ const Todo = () => {
                             <input
                                 type="checkbox"
                                 checked={e.isCompleted}
-                                onChange={(e) => onChangeTodoCheckbox(e, idx)}
+                                onChange={() => onChangeTodoCheckbox(idx)}
                             />
-                            <span>{e.todo}</span>
+                            {!e.isUpdating ? (
+                                <span>{e.todo}</span>
+                            ) : (
+                                <input
+                                    data-testid="modify-input"
+                                    value={e.updateValue}
+                                    onChange={(event) =>
+                                        onChangeUpdateInput(event, idx)
+                                    }
+                                />
+                            )}
                         </label>
-                        <button data-testid="modify-button">수정</button>
-                        <button
-                            data-testid="delete-button"
-                            onClick={(e) => onClickDeleteTodo(e, idx)}
-                        >
-                            삭제
-                        </button>
+                        {!e.isUpdating ? (
+                            <button
+                                data-testid="modify-button"
+                                onClick={() => onClickUpdateTodo(idx)}
+                            >
+                                수정
+                            </button>
+                        ) : (
+                            <button
+                                data-testid="submit-button"
+                                onClick={() => onClickUpdateSubmit(idx)}
+                            >
+                                제출
+                            </button>
+                        )}
+                        {!e.isUpdating ? (
+                            <button
+                                data-testid="delete-button"
+                                onClick={() => onClickDeleteTodo(idx)}
+                            >
+                                삭제
+                            </button>
+                        ) : (
+                            <button
+                                data-testid="cancel-button"
+                                onClick={() => onClickUpdateCancel(idx)}
+                            >
+                                취소
+                            </button>
+                        )}
                     </li>
                 );
             })}
