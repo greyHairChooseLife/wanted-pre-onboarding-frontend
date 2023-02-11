@@ -16,6 +16,7 @@ const Todo = () => {
         else requestTodo();
     }, []);
 
+    //	READ
     const requestTodo = async () => {
         const config = {
             headers: {
@@ -26,6 +27,7 @@ const Todo = () => {
         setTodos(result.data);
     };
 
+    //	CREATE
     const onClickNewTodo = () => {
         const config = {
             headers: {
@@ -47,6 +49,9 @@ const Todo = () => {
         setNewTodo('');
     };
 
+    const onChangeNewTodoInput = (e) => setNewTodo(e.target.value);
+
+    //	DELETE
     const onClickDeleteTodo = (idx) => {
         const id = todos[idx].id;
         const config = {
@@ -60,6 +65,7 @@ const Todo = () => {
             .catch((err) => console.log(err));
     };
 
+    //	UPDATE
     const onClickUpdateTodo = (idx) => {
         const target = todos[idx];
         const effectedTarget = {
@@ -85,29 +91,6 @@ const Todo = () => {
             else return originE;
         });
         setTodos(effectedTodos);
-    };
-
-    const onChangeNewTodoInput = (e) => setNewTodo(e.target.value);
-
-    const onChangeTodoCheckbox = (idx) => {
-        const target = todos[idx];
-        const config = {
-            headers: {
-                Authorization: `Bearer ${myToken}`,
-                'Content-Type': 'application/json',
-            },
-        };
-        axios
-            .put(
-                API + `todos/${target.id}`,
-                {
-                    todo: target.todo,
-                    isCompleted: !target.isCompleted,
-                },
-                config
-            )
-            .then(() => requestTodo())
-            .catch((err) => console.log(err));
     };
 
     const onClickUpdateSubmit = (idx) => {
@@ -143,6 +126,27 @@ const Todo = () => {
             else return originE;
         });
         setTodos(effectedTodos);
+    };
+
+    const onChangeTodoCheckbox = (idx) => {
+        const target = todos[idx];
+        const config = {
+            headers: {
+                Authorization: `Bearer ${myToken}`,
+                'Content-Type': 'application/json',
+            },
+        };
+        axios
+            .put(
+                API + `todos/${target.id}`,
+                {
+                    todo: target.todo,
+                    isCompleted: !target.isCompleted,
+                },
+                config
+            )
+            .then(() => requestTodo())
+            .catch((err) => console.log(err));
     };
 
     return (
