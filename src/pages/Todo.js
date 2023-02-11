@@ -91,15 +91,23 @@ const Todo = () => {
 
     const onChangeTodoCheckbox = (idx) => {
         const target = todos[idx];
-        const effectedTarget = {
-            ...target,
-            isCompleted: !target.isCompleted,
+        const config = {
+            headers: {
+                Authorization: `Bearer ${myToken}`,
+                'Content-Type': 'application/json',
+            },
         };
-        const effectedTodos = todos.map((originE, originIndex) => {
-            if (originIndex === idx) return effectedTarget;
-            else return originE;
-        });
-        setTodos(effectedTodos);
+        axios
+            .put(
+                API + `todos/${target.id}`,
+                {
+                    todo: target.todo,
+                    isCompleted: !target.isCompleted,
+                },
+                config
+            )
+            .then(() => requestTodo())
+            .catch((err) => console.log(err));
     };
 
     const onClickUpdateSubmit = (idx) => {
