@@ -4,27 +4,39 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API = 'https://pre-onboarding-selection-task.shop/';
-const myToken = localStorage.getItem('access_token');
 
 const Todo = () => {
+    const myToken = localStorage.getItem('access_token');
     const navigate = useNavigate();
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState('');
+    const [apiError, setApiError] = useState('');
 
     useEffect(() => {
         if (!isLogin()) navigate('/signin');
         else requestTodo();
     }, []);
 
+    //	api 에러처리: 에러메시지를 잠시 보여준다.
+    useEffect(() => {
+        setTimeout(() => setApiError(''), 1_000 * 10);
+    }, [apiError]);
+
     //	READ
-    const requestTodo = async () => {
+    const requestTodo = () => {
         const config = {
             headers: {
                 Authorization: `Bearer ${myToken}`,
             },
         };
-        const result = await axios.get(API + 'todos', config);
-        setTodos(result.data);
+        axios
+            .get(API + 'todos', config)
+            .then((res) => setTodos(res.data))
+            .catch(() =>
+                setApiError(
+                    'todo 목록을 확인 중 문제가 발생헀습니다. 새로고침하여 작업내용을 확인하세요.'
+                )
+            );
     };
 
     //	CREATE
@@ -44,9 +56,8 @@ const Todo = () => {
                 config
             )
             .then(() => requestTodo())
-            .catch((err) => console.log(err));
-
-        setNewTodo('');
+            .catch(() => setApiError('todo를 추가하지 못했습니다.'))
+            .finally(() => setNewTodo(''));
     };
 
     const onChangeNewTodoInput = (e) => setNewTodo(e.target.value);
@@ -62,7 +73,11 @@ const Todo = () => {
         axios
             .delete(API + `todos/${id}`, config)
             .then(() => requestTodo())
-            .catch((err) => console.log(err));
+            .catch(() =>
+                setApiError(
+                    '삭제 요청 중 문제가 발생했습니다. 새로고침하여 작업내용을 확인하세요.'
+                )
+            );
     };
 
     //	UPDATE
@@ -111,7 +126,11 @@ const Todo = () => {
                 config
             )
             .then(() => requestTodo())
-            .catch((err) => console.log(err));
+            .catch(() =>
+                setApiError(
+                    '업데이트 중 문제가 발생했습니다. 새로고침하여 변경 사항을 확인하세요.'
+                )
+            );
     };
 
     const onClickUpdateCancel = (idx) => {
@@ -146,7 +165,11 @@ const Todo = () => {
                 config
             )
             .then(() => requestTodo())
-            .catch((err) => console.log(err));
+            .catch(() =>
+                setApiError(
+                    '업데이트 중 문제가 발생했습니다. 새로고침하여 변경 사항을 확인하세요.'
+                )
+            );
     };
 
     return (
@@ -220,6 +243,7 @@ const Todo = () => {
                     </li>
                 );
             })}
+            {apiError.length > 0 && <div>{apiError}</div>}
         </>
     );
 };

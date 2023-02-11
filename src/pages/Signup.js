@@ -4,39 +4,37 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const API = 'https://pre-onboarding-selection-task.shop/';
+const INVALID_EMAIL_MSG = '이메일 입력란에 "@"를 포함 해 주세요.';
+const INVALID_PSW_MSG = '비밀번호를 8자 이상으로 만들어주세요.';
 
 const Signup = () => {
     const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [emailFeedback, setEmailFeedback] = useState(INVALID_EMAIL_MSG);
+    const [psw, setPsw] = useState('');
+    const [pswFeedback, setPswFeedback] = useState(INVALID_PSW_MSG);
+    const [retryMsg, setRetryMsg] = useState('');
+
     useEffect(() => {
         if (isLogin()) navigate('/todo');
     }, []);
-    const [retryMsg, setRetryMsg] = useState('');
-    const [email, setEmail] = useState('');
-    const [emailFeedback, setEmailFeedback] = useState(
-        '이메일 입력란에 "@"를 포함 해 주세요.'
-    );
-    const [psw, setPsw] = useState('');
-    const [pswFeedback, setPswFeedback] = useState(
-        '비밀번호를 8자 이상으로 만들어주세요.'
-    );
 
-    const onChangeEmail = (e) => {
-        setEmail(e.target.value);
-    };
-
-    const onChangePsw = (e) => {
-        setPsw(e.target.value);
-    };
+    const onChangeEmail = (e) => setEmail(e.target.value);
+    const onChangePsw = (e) => setPsw(e.target.value);
 
     useEffect(() => {
         if (!isEmailValide(email)) {
-            setEmailFeedback('이메일 입력란에 "@"를 포함 해 주세요.');
+            setEmailFeedback(INVALID_EMAIL_MSG);
         } else setEmailFeedback('');
 
         if (!isPswValide(psw)) {
-            setPswFeedback('비밀번호를 8자 이상으로 만들어주세요.');
+            setPswFeedback(INVALID_PSW_MSG);
         } else setPswFeedback('');
     }, [email, psw]);
+
+    useEffect(() => {
+        setRetryMsg('');
+    }, [email]);
 
     const onSubmitApply = (e) => {
         e.preventDefault();
