@@ -14,8 +14,23 @@ const Todo = () => {
 
     useEffect(() => {
         if (!isLogin()) navigate('/signin');
-        else requestTodo();
-    }, []);
+        else {
+            const myToken = localStorage.getItem('access_token');
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${myToken}`,
+                },
+            };
+            axios
+                .get(API + 'todos', config)
+                .then((res) => setTodos(res.data))
+                .catch(() =>
+                    setApiError(
+                        'todo 목록을 확인 중 문제가 발생헀습니다. 새로고침하여 작업내용을 확인하세요.'
+                    )
+                );
+        }
+    }, [navigate]);
 
     //	api 에러처리: 에러메시지를 잠시 보여준다.
     useEffect(() => {

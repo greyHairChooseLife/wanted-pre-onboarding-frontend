@@ -17,7 +17,7 @@ const Signin = () => {
 
     useEffect(() => {
         if (isLogin()) navigate('/todo');
-    }, []);
+    }, [navigate]);
 
     const onChangeEmail = (e) => setEmail(e.target.value);
     const onChangePsw = (e) => setPsw(e.target.value);
